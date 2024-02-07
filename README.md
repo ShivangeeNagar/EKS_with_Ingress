@@ -82,7 +82,7 @@ eksctl create iamserviceaccount \
 
 12) Now, install aws load balancer controller usinh helm charts -
 
-helm install aws-load-balancer-controller eks/aws-load-balancer-controller \            
+  helm install aws-load-balancer-controller eks/aws-load-balancer-controller \            
   -n kube-system \
   --set clusterName=<your-cluster-name> \
   --set serviceAccount.create=false \
