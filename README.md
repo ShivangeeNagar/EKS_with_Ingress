@@ -56,4 +56,64 @@ aws iam create-policy \
     --policy-name AWSLoadBalancerControllerIAMPolicy \
     --policy-document file://iam_policy.json
 
+10) Crate IAM role / IAM service account for our controller (pod)
+
+eksctl create iamserviceaccount \
+  --cluster=<your-cluster-name> \
+  --namespace=kube-system \
+  --name=aws-load-balancer-controller \
+  --role-name AmazonEKSLoadBalancerControllerRole \
+  --attach-policy-arn=arn:aws:iam::<your-aws-account-id>:policy/AWSLoadBalancerControllerIAMPolicy \
+  --approve
+
+11) Creation of the Controller -
+
+    a) We are going to use helm charts for this. The helm chart will create the actual controller and will use the service account for running the pod
+
+       brew install helm
+
+    b) Add the helm repo -
+
+       helm repo add eks https://aws.github.io/eks-charts
+
+    c) helm repo update eks -
+
+       helm repo update eks
+
+12) Now, install aws load balancer controller usinh helm charts -
+
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller \            
+  -n kube-system \
+  --set clusterName=<your-cluster-name> \
+  --set serviceAccount.create=false \
+  --set serviceAccount.name=aws-load-balancer-controller \
+  --set region=<region> \
+  --set vpcId=<your-vpc-id>
+
+13) Verify that the deployments are running -
+
+kubectl get deployment -n kube-system aws-load-balancer-controller
+
+14) List created  and deployed pods -
+
+kubectl get pods -n kube-system
+
+kubectl get deploy -n kube-system
+
+15) In case your aws load balancer controller is not createe and wish to troubleshoot it. Use this command and check the status in the file and the error it generates -
+
+kubectl edit deploy/aws-load-balancer-controller -n kube-system
+
+16) Final step -
+
+Go inside EC2, if you see a load balancer there, Yippeee! This load balancer is created by the aws-load-balancer controller using our ingress resource.
+
+Run this command - kubectl get ingress -n game-2048 
+
+Checkout the address on this resource now! 
+This address is same as the DNS ip address of your load balanacer on aws console. Now if your load balancer state is active. 
+Go to this URL and checkout your web-app being sucessfully deployed on the browser, finally accessed from the outside world!
+
+
+
 
