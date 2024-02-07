@@ -28,4 +28,20 @@ eksctl create fargateprofile \
 
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.5.4/docs/examples/2048/2048_full.yaml
 
+5) To checkout the running pods / status -
+
+kubectl get pods -n game-2048
+
+6) To checkout the service -
+
+kubectl get svc -n game-2048
+
+Note : when you see the service, you will notice, it does not have any external IP yet
+
+7) To checkout your ingress -
+
+kubectl get ingress -n game-2048
+
+Note : when you see the ingress, please note that it does not have any address yet, which means there has to be an ingress controller which can provide this address and that address can be used to access your application on the browser.
+
 
