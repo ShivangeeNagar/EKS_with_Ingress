@@ -44,4 +44,16 @@ kubectl get ingress -n game-2048
 
 Note : when you see the ingress, please note that it does not have any address yet, which means there has to be an ingress controller which can provide this address and that address can be used to access your application on the browser.
 
+8) In order to create a ALB ingress controller, there is a prerequisite - we must integrate an indentity provider for this pod. In our case, we will create an IAM OIDC provider as our pod ( controller) needs access to other aws resources.
+
+eksctl utils associate-iam-oidc-provider --cluster $cluster_name --approve
+
+9) Also, for the same reason, we need to create IAM policy -
+
+curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.5.4/docs/install/iam_policy.json
+
+aws iam create-policy \
+    --policy-name AWSLoadBalancerControllerIAMPolicy \
+    --policy-document file://iam_policy.json
+
 
